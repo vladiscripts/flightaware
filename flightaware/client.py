@@ -261,6 +261,24 @@ class Client(object):
         return self._request("Departed", data)
 
     def enroute(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
+        """
+        Enroute returns information about flights already in the air for the
+        specified airport and maximum number of flights to be returned. Enroute
+        flights are returned from soonest estimated arrival to least soon
+        estimated arrival.
+
+        See also Arrived, Departed, and Scheduled for other airport tracking
+        functionality.
+
+
+        airport string  the ICAO airport ID (e.g., KLAX, KSFO, KIAH, KHOU, KJFK, KEWR, KORD, KATL, etc.)
+
+        howMany int determines the number of results. Must be a positive integer value less than or equal to 15, unless SetMaximumResultSize has been called.
+
+        filter  string  can be "ga" to show only general aviation traffic, "airline" to only show airline traffic, or null/empty to show all traffic.
+
+        offset  int must be an integer value of the offset row count you want the search to start at. Most requests should be 0.
+        """
         data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
         return self._request("Enroute", data)
 
@@ -396,10 +414,85 @@ class Client(object):
         raise NotImplementedError
 
     def scheduled(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
+        """
+        Scheduled returns information about scheduled flights (technically,
+        filed IFR flights) for a specified airport and a maximum number of
+        flights to be returned. Scheduled flights are returned from soonest to
+        furthest in the future to depart. Only flights that have not actually
+        departed, and have a scheduled departure time between 2 hours in the
+        past and 24 hours in the future, are considered.
+
+        Times returned are seconds since 1970 (UNIX epoch time).
+
+        See also Arrived, Departed, and Enroute for other airport tracking
+        functionality.
+
+
+        airport string  the ICAO airport ID (e.g., KLAX, KSFO, KIAH, KHOU, KJFK, KEWR, KORD, KATL, etc.)
+
+        howMany int determines the number of results. Must be a positive integer value less than or equal to 15, unless SetMaximumResultSize has been called.
+
+        filter  string  can be "ga" to show only general aviation traffic, "airline" to only show airline traffic, or null/empty to show all traffic.
+
+        offset  int must be an integer value of the offset row count you want the search to start at. Most requests should be 0.
+        """
         data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
         return self._request("Scheduled", data)
 
     def search(self, parameters={}, how_many=MAX_RECORD_LENGTH, offset=0):
+        """
+        Search performs a query for data on all airborne aircraft to find ones
+        matching the search query. Query parameters include a
+        latitude/longitude box, aircraft ident with wildcards, type with
+        wildcards, prefix, suffix, origin airport, destination airport, origin
+        or destination airport, groundspeed, and altitude. It takes search
+        terms in a single string comprising "-key value" pairs and returns an
+        array of flight structures. Codeshares and alternate idents are NOT
+        searched when using the -idents clause.
+
+        Keys include:
+
+        -prefix STRING
+        -type STRING
+        -suffix STRING
+        -idents STRING
+        -destination STRING
+        -origin STRING
+        -originOrDestination STRING
+        -aboveAltitude INTEGER
+        -belowAltitude INTEGER
+        -aboveGroundspeed INTEGER
+        -belowGroundspeed INTEGER
+        -latlong "MINLAT MINLON MAXLAT MAXLON"
+        -filter {ga|airline}
+        -inAir {0|1}
+
+        To search for all aircraft below ten-thousand feet with a groundspeed
+        over 200 kts:
+
+        -belowAltitude 100 -aboveGroundspeed 200
+        To search for all in-air Boeing 777s:
+
+        -type B77*
+        To search for all aircraft heading to Los Angeles International Airport
+        (LAX) that are "heavy" aircraft:
+
+        -destination LAX -prefix H
+        To search for all United Airlines flights in Boeing 737s
+
+        -idents UAL* -type B73*
+        See the SearchBirdseyeInFlight function for additional functionality.
+
+
+        query   string  search expression
+
+        howMany int maximum number of flights to obtain. Must be a positive
+        integer value less than or equal to 15, unless SetMaximumResultSize has
+        been called.
+
+        offset  int must be an integer value of the offset row count you want
+        the search to start at. Most requests should be 0.
+        """
         query = ""
         for key, value in parameters.items():
             query += "-%s %s " % (key, value)
