@@ -260,7 +260,7 @@ class Client(object):
         data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
         return self._request("Departed", data)
 
-    def enroute(self):
+    def enroute(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
         data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
         return self._request("Enroute", data)
 
@@ -395,9 +395,9 @@ class Client(object):
     def routes_between_airports_ex(self):
         raise NotImplementedError
 
-    def scheduled(self):
+    def scheduled(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
         data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
-        return self._request("Enroute", data)
+        return self._request("Scheduled", data)
 
     def search(self):
         raise NotImplementedError
