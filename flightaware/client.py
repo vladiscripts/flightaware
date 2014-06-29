@@ -239,7 +239,8 @@ class Client(object):
         filter	string	can be "ga" to show only general aviation traffic, "airline" to only show airline traffic, or null/empty to show all traffic.
         offset	int	must be an integer value of the offset row count you want the search to start at. Most requests should be 0.
         """
-        raise NotImplementedError
+        data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
+        return self._request("Arrived", data)
 
     def departed(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
         """
@@ -256,10 +257,12 @@ class Client(object):
         filter	string	can be "ga" to show only general aviation traffic, "airline" to only show airline traffic, or null/empty to show all traffic.
         offset	int	must be an integer value of the offset row count you want the search to start at. Most requests should be 0.
         """
-        raise NotImplementedError
+        data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
+        return self._request("Departed", data)
 
     def enroute(self):
-        raise NotImplementedError
+        data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
+        return self._request("Enroute", data)
 
     def fleet_arrived(self):
         raise NotImplementedError
@@ -393,7 +396,8 @@ class Client(object):
         raise NotImplementedError
 
     def scheduled(self):
-        raise NotImplementedError
+        data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
+        return self._request("Enroute", data)
 
     def search(self):
         raise NotImplementedError
