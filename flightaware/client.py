@@ -399,8 +399,12 @@ class Client(object):
         data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
         return self._request("Scheduled", data)
 
-    def search(self):
-        raise NotImplementedError
+    def search(self, parameters={}, how_many=MAX_RECORD_LENGTH, offset=0):
+        query = ""
+        for key, value in parameters.items():
+            query += "-%s %s " % (key, value)
+        data = {"query": query, "howMany": how_many, "offset": offset}
+        return self._request("Search", data)
 
     def search_birdseye_in_flight(self):
         raise NotImplementedError
