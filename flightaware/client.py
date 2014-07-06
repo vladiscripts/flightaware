@@ -62,7 +62,8 @@ class Client(object):
         key = "{}Result".format(method)
         if key in result:
             final = result[key]
-            if "data" in final:
+            # Test if final is a dict before iterating
+            if type(final) is dict and "data" in final:
                 final = final["data"]
         return final
 
@@ -531,15 +532,171 @@ class Client(object):
         return self._request("ZipcodeInfo", data)
 
     def get_alerts(self):
-        raise NotImplementedError
+        """
+        GetAlerts retrieves all of the FlightXML flight alerts that are
+        currently scheduled for the user.
 
-    def delete_alert(self):
-        raise NotImplementedError
+        The other methods SetAlert, DeleteAlert, and RegisterAlertEndpoint can
+        be used to manage FlightXML flight alerts.
 
-    def set_alert(self):
-        raise NotImplementedError
+        Note: If other alerts have been defined by the user on the FlightAware
+        website or mobile app, they will also be included in the returned
+        listing.
 
-    def register_alert_endpoint(self):
-        raise NotImplementedError
+        Inputs
 
+        No inputs.
+        Returns
 
+        Type    Description
+        FlightAlertListing  all defined alerts by the user
+        """
+        return self._request("GetAlerts", {})
+
+    def delete_alert(self, alert_id=None):
+        """
+        DeleteAlert deletes a FlightXML flight alert.
+
+        The other methods SetAlert, GetAlerts, and RegisterAlertEndpoint can be
+        used to manage FlightXML flight alerts.
+
+        Inputs
+
+        Name        Type    Description
+        alert_id    int     alert_id to delete
+
+        Returns
+
+        Type    Description
+        int     returns 1 on success
+        """
+        if alert_id is not None:
+            data = {"alert_id": alert_id}
+            return self._request("DeleteAlert", data)
+
+    def set_alert(self, alert_id=0, ident=None, origin=None, destination=None,
+        aircrafttype=None, date_start=None, date_end=None, channels=[],
+        enabled=True, max_weekly=1000):
+        """
+        SetAlert creates or updates a FlightXML flight alert. When the alert is
+        triggered, a callback mechanism will be used to notify the address
+        specified by RegisterAlertEndpoint. Each alert that is triggered is
+        charged at the rate of one "class 2" FlightXML query.
+
+        If the "alert_id" argument is specified, then an existing alert is
+        updated to the new values specified, otherwise a 0 or blank alert_id
+        will cause a new alert to be created.
+
+        As a special case, if "alert_id" is specified as -1 and "ident" is not
+        blank, update the most recently modified alert for the same "ident" to
+        the arguments specified. If no existing alert for that "ident" exists,
+        create it.
+
+        For a single day alert, specify date_start and date_end with the same
+        value. For a recurring alert, specify both date_start as 0 and date_end
+        as 0.
+
+        The "channel" argument is a Tcl-style string list that specifies the
+        target channel ID and the triggering event types. At this time, the
+        channel ID should always be specified as 16. Supported event types are:
+        e_filed e_departure e_arrival e_diverted e_cancelled. For example this
+        specifies a FlightXML Push channel with several flight statuses:
+        "{16 e_filed e_departure e_arrival e_diverted e_cancelled}"
+
+        The "max_weekly" argument is used to prevent the an alert from being
+        created that might generate more alerts than desired. This check is
+        only done at alert creation time based on historical trends for the
+        filter selection, and is not an enforcement of alerts actually
+        delivered.
+
+        Returns a non-zero number (the alert_id that was added or updated) on
+        success, otherwise an exception is raised. An error string beginning
+        with "OVERLIMIT" means the user has exceeded the maximum number of
+        enabled alerts permitted by their account type; consider disabling or
+        deleting some alerts, or request an account upgrade. An error string
+        beginning with "FLOODWARN" means that the new alert was rejected
+        because it was predicted to exceed the number of alerts specified by
+        the "max_weekly" argument.
+
+        Inputs
+
+        Name        Type    Description
+        alert_id    int     alert_id of an existing alert to update.
+                            specify 0 or "" to create a new alert.
+                            specify -1 to upsert an alert.
+                            otherwise an existing alert id.
+        ident       string  optional ident or faFlightID of flight
+        origin      string  optional origin airport code
+        destination string  optional destination airport code
+        aircrafttype    string  optional aircraft type
+        date_start  int     optional starting date of alert (in epoch seconds,
+                            will be rounded to whole day)
+        date_end    int     optional ending date of alert (in epoch seconds,
+                            will be rounded to whole day)
+        channels    string  list of channels and event types (see description
+                            for syntax)
+        enabled     boolean whether the alert should be enabled or disabled (if
+                            missing, default is true)
+        max_weekly  int     reject the new alert if the estimated number of
+                            alerts per week exceeds this amount (recommended
+                            default 1000)
+
+        Returns
+
+        Type    Description
+        int returns non-zero on success
+        """
+        data = {
+            "alert_id": alert_id,
+            "enabled": enabled,
+            "max_weekly": max_weekly
+        }
+        if ident is not None:
+            data["ident"] = ident
+        if origin is not None:
+            data["origin"] = origin
+        if destination is not None:
+            data["destination"] = destination
+        if aircrafttype is not None:
+            data["aircrafttype"] = aircrafttype
+        if date_start is not None:
+            data["date_start"] = date_start
+        if date_end is not None:
+            data["date_end"] = date_end
+        if len(channels) > 0:
+            data["channels"] = channels
+        if enabled is not None:
+            data["enabled"] = enabled
+
+        return self._request("SetAlert", data)
+
+    def register_alert_endpoint(self, address, format_type="json/post"):
+        """
+        RegisterAlertEndpoint specifies where pushed FlightXML flight alerts.
+        Calling this method a second time will overwrite any previously
+        registered endpoint.
+
+        The other methods SetAlert, GetAlerts, and DeleteAlert can be used to
+        manage FlightXML flight alerts.
+
+        The "format_type" argument controls how the flight alert is delivered
+        to the specified address. Currently "format_type" must always be
+        "json/post", although other formats may be introduced in the future.
+        When an alert occurs, FlightAware servers will deliver an HTTP POST to
+        the specified address with the body containing a JSON-encoded message
+        about the alert and flight.
+
+        Returns 1 on success, otherwise an error record is returned.
+
+        Inputs
+
+        Name    Type    Description
+        address string  URL of endpoint
+        format_type string  Must be "json/post"
+        Returns
+
+        Type    Description
+        int     returns 1 on success
+        """
+        data = {"address": address, "format_type": format_type}
+        return self._request("RegisterAlertEndpoint", data)
