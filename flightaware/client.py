@@ -220,8 +220,12 @@ class Client(object):
         """
         return self._request("CountAllEnrouteAirlineOperations")
 
-    def decode_flight_route(self):
-        raise NotImplementedError
+    def decode_flight_route(self, fa_flight_id):
+        """
+        Given a flight identifier (faFlightID) of a past, current, or future flight, DecodeFlightRoute returns a "cracked" list of noteworthy navigation points along the planned flight route. The list represents the originally planned route of travel, which may differ slightly from the actual flight path flown. The returned list will include the name, type, latitude, and longitude of each point. Additional reporting points along the route may be automatically included in the returned list. Not all flight routes can be successfully decoded by this function, particularly if the flight is not entirely within the continental U.S. airspace, since this function only has access to navaids within that area. To obtain the faFlightID, you can use a function such as GetFlightID, FlightInfoEx, or InFlightInfo.
+        """
+        data = {"faFlightID": fa_flight_id}
+        return self._request("DecodeFlightRoute", data)
 
     def decode_route(self):
         raise NotImplementedError
@@ -345,14 +349,24 @@ class Client(object):
     def get_historical_track(self):
         raise NotImplementedError
 
-    def get_last_track(self):
-        raise NotImplementedError
+    def get_last_track(self, ident):
+        """
+        GetLastTrack looks up a flight's track log by specific tail number (e.g., N12345) or ICAO airline and flight number (e.g., SWA2558). It returns the track log from the current IFR flight or, if the aircraft is not airborne, the most recent IFR flight. It returns an array of positions, with each including the timestamp, longitude, latitude, groundspeed, altitude, altitudestatus, updatetype, and altitudechange. Altitude is in hundreds of feet or Flight Level where appropriate, see our FAQ about flight levels. Also included altitude status, update type, and altitude change.
+        Altitude status is 'C' when the flight is more than 200 feet away from its ATC-assigned altitude. (For example, the aircraft is transitioning to its assigned altitude.) Altitude change is 'C' if the aircraft is climbing (compared to the previous position reported), 'D' for descending, and empty if it is level. This happens for VFR flights with flight following, among other things. Timestamp is integer seconds since 1970 (UNIX epoch time).
+        This function only returns tracks for recent flights within approximately the last 24 hours. Use the GetHistoricalTrack function to look up a specific past flight rather than just the most recent one. Codeshares and alternate idents are automatically searched.
+        """
+        data = {"ident": ident}
+        return self._request("GetLastTrack", data)
 
     def inbound_flight_info(self):
         raise NotImplementedError
 
-    def in_flight_info(self):
-        raise NotImplementedError
+    def in_flight_info(self, ident):
+        """
+        InFlightInfo looks up a specific tail number (e.g., N12345) or ICAO airline and flight number (e.g., SWA2558) and returns current position/direction/speed information. It is only useful for currently airborne flights within approximately the last 24 hours. Codeshares and alternate idents are automatically searched.
+        """
+        data = {"ident": ident}
+        return self._request("InFlightInfo", data)
 
     def lat_lng_to_distance(self):
         raise NotImplementedError
@@ -408,8 +422,12 @@ class Client(object):
         data = {"airport": airport}
         return self._request("NTaf", data)
 
-    def routes_between_airports(self):
-        raise NotImplementedError
+    def routes_between_airports(self, origin, destination):
+        """
+        RoutesBetweenAirports returns information about assigned IFR routings between two airports. For each known routing, the route, number of times that route has been assigned, and the filed altitude (measured in hundreds of feet or Flight Level) are returned. Only flights that departed within the last 6 hours and flight plans filed within the last 3 days are considered.
+        """
+        data = {"origin": origin, "destination": destination}
+        return self._request("RoutesBetweenAirports", data)
 
     def routes_between_airports_ex(self):
         raise NotImplementedError
