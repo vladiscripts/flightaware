@@ -309,7 +309,11 @@ class Client(object):
         ident	string	requested tail number, or airline with flight number
         howMany	int	maximum number of past flights to obtain. Must be a positive integer value less than or equal to 15, unless SetMaximumResultSize has been called.
         """
-        raise NotImplementedError
+        data = {
+            "ident": ident,
+            "howMany": how_many
+        }
+        return self._request("FlightInfo", data)
 
     def flight_info_ex(self):
         """

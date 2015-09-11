@@ -20,6 +20,11 @@ class TestSequenceFunctions(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_flight_info(self):
+        results = self.client.flight_info("N415PW")
+        print results
+        self.assertNotIn("error", results)
+
     def test_metar(self):
         results = self.client.metar("BNA")
         self.assertNotIn("error", results)
