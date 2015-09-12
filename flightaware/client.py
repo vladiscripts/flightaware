@@ -260,6 +260,27 @@ class Client(object):
         data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
         return self._request("Arrived", data)
 
+    def delete_alert(self, alert_id=None):
+        """
+        DeleteAlert deletes a FlightXML flight alert.
+
+        The other methods SetAlert, GetAlerts, and RegisterAlertEndpoint can be
+        used to manage FlightXML flight alerts.
+
+        Inputs
+
+        Name        Type    Description
+        alert_id    int     alert_id to delete
+
+        Returns
+
+        Type    Description
+        int     returns 1 on success
+        """
+        if alert_id is not None:
+            data = {"alert_id": alert_id}
+            return self._request("DeleteAlert", data)
+
     def departed(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
         """
         Departed returns information about already departed flights for a specified airport and maximum number of
@@ -526,14 +547,36 @@ class Client(object):
         data = {"airport": airport}
         return self._request("NTaf", data)
 
-    def taf(self, airport):
+    def register_alert_endpoint(self, address, format_type="json/post"):
         """
-        Given an airport, return the terminal area forecast, if available.
-        See NTaf for a more advanced interface.
-        airport	string	the ICAO airport ID (e.g., KLAX, KSFO, KIAH, KHOU, KJFK, KEWR, KORD, KATL, etc.)
+        RegisterAlertEndpoint specifies where pushed FlightXML flight alerts.
+        Calling this method a second time will overwrite any previously
+        registered endpoint.
+
+        The other methods SetAlert, GetAlerts, and DeleteAlert can be used to
+        manage FlightXML flight alerts.
+
+        The "format_type" argument controls how the flight alert is delivered
+        to the specified address. Currently "format_type" must always be
+        "json/post", although other formats may be introduced in the future.
+        When an alert occurs, FlightAware servers will deliver an HTTP POST to
+        the specified address with the body containing a JSON-encoded message
+        about the alert and flight.
+
+        Returns 1 on success, otherwise an error record is returned.
+
+        Inputs
+
+        Name    Type    Description
+        address string  URL of endpoint
+        format_type string  Must be "json/post"
+        Returns
+
+        Type    Description
+        int     returns 1 on success
         """
-        data = {"airport": airport}
-        return self._request("NTaf", data)
+        data = {"address": address, "format_type": format_type}
+        return self._request("RegisterAlertEndpoint", data)
 
     def routes_between_airports(self, origin, destination):
         """
@@ -640,49 +683,6 @@ class Client(object):
     def search_count(self):
         raise NotImplementedError
 
-    def set_maximum_result_sizes(self):
-        raise NotImplementedError
-
-    def tail_owner(self, ident):
-        """
-        TailOwner returns information about an the owner of an aircraft, given a flight number or N-number. Data returned
-        includes owner's name, location (typically city and state), and website, if any. Codeshares and alternate idents are automatically searched.
-
-        ident	string	requested tail number
-        """
-        data = {"ident": ident}
-        return self._request("TailOwner", data)
-
-    def zipcode_info(self, zipcode):
-        """
-        ZipcodeInfo returns information about a five-digit zipcode. Of particular importance is latitude and longitude.
-
-        zipcode	string	a five-digit U.S. Postal Service zipcode.
-        """
-        data = {"zipcode": zipcode}
-        return self._request("ZipcodeInfo", data)
-
-    def delete_alert(self, alert_id=None):
-        """
-        DeleteAlert deletes a FlightXML flight alert.
-
-        The other methods SetAlert, GetAlerts, and RegisterAlertEndpoint can be
-        used to manage FlightXML flight alerts.
-
-        Inputs
-
-        Name        Type    Description
-        alert_id    int     alert_id to delete
-
-        Returns
-
-        Type    Description
-        int     returns 1 on success
-        """
-        if alert_id is not None:
-            data = {"alert_id": alert_id}
-            return self._request("DeleteAlert", data)
-
     def set_alert(self, alert_id=0, ident=None, origin=None, destination=None,
         aircrafttype=None, date_start=None, date_end=None, channels=[],
         enabled=True, max_weekly=1000):
@@ -779,33 +779,34 @@ class Client(object):
 
         return self._request("SetAlert", data)
 
-    def register_alert_endpoint(self, address, format_type="json/post"):
+    def set_maximum_result_sizes(self):
+        raise NotImplementedError
+
+    def taf(self, airport):
         """
-        RegisterAlertEndpoint specifies where pushed FlightXML flight alerts.
-        Calling this method a second time will overwrite any previously
-        registered endpoint.
-
-        The other methods SetAlert, GetAlerts, and DeleteAlert can be used to
-        manage FlightXML flight alerts.
-
-        The "format_type" argument controls how the flight alert is delivered
-        to the specified address. Currently "format_type" must always be
-        "json/post", although other formats may be introduced in the future.
-        When an alert occurs, FlightAware servers will deliver an HTTP POST to
-        the specified address with the body containing a JSON-encoded message
-        about the alert and flight.
-
-        Returns 1 on success, otherwise an error record is returned.
-
-        Inputs
-
-        Name    Type    Description
-        address string  URL of endpoint
-        format_type string  Must be "json/post"
-        Returns
-
-        Type    Description
-        int     returns 1 on success
+        Given an airport, return the terminal area forecast, if available.
+        See NTaf for a more advanced interface.
+        airport	string	the ICAO airport ID (e.g., KLAX, KSFO, KIAH, KHOU, KJFK, KEWR, KORD, KATL, etc.)
         """
-        data = {"address": address, "format_type": format_type}
-        return self._request("RegisterAlertEndpoint", data)
+        data = {"airport": airport}
+        return self._request("NTaf", data)
+
+    def tail_owner(self, ident):
+        """
+        TailOwner returns information about an the owner of an aircraft, given a flight number or N-number. Data returned
+        includes owner's name, location (typically city and state), and website, if any. Codeshares and alternate idents are automatically searched.
+
+        ident	string	requested tail number
+        """
+        data = {"ident": ident}
+        return self._request("TailOwner", data)
+
+    def zipcode_info(self, zipcode):
+        """
+        ZipcodeInfo returns information about a five-digit zipcode. Of particular importance is latitude and longitude.
+
+        zipcode	string	a five-digit U.S. Postal Service zipcode.
+        """
+        data = {"zipcode": zipcode}
+        return self._request("ZipcodeInfo", data)
+
