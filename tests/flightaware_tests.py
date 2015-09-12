@@ -150,12 +150,11 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_inbound_flight_info(self):
         faFlightID = self.client.get_flight_id("SWA2612", 1442035080)
-        if 1: pprint(faFlightID)
+        if verbose: pprint(faFlightID)
 
         results = self.client.inbound_flight_info(faFlightID)
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
-
 
     def test_metar(self):
         results = self.client.metar("BNA")
