@@ -136,8 +136,16 @@ class TestSequenceFunctions(unittest.TestCase):
             self.assertIn("departure_time", result)
 
     def test_get_historical_track(self):
-        results = self.client.get_historical_track("N415PW")
+        faFlightID = self.client.get_flight_id("N415PW", 1442008560)
+        if verbose: pprint(faFlightID)
+
+        results = self.client.get_historical_track(faFlightID)
         if verbose: pprint(results)
+        self.assertNotIn("error", results)
+
+    def test_last_track(self):
+        results = self.client.get_last_track("N415PW")
+        if 1: pprint(results)
         self.assertNotIn("error", results)
 
     def test_metar(self):
