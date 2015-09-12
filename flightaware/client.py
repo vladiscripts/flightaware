@@ -92,7 +92,7 @@ class Client(object):
         data = {"faFlightID": fa_flight_id}
         return self._request("AirlineFlightInfo", data)
 
-    def airline_flight_schedules(self, start_date, end_date, origin=None, destination=None, airline=None, flight_number=None, how_many=MAX_RECORD_LENGTH, offset=0):
+    def airline_flight_schedules(self, start_date, end_date, origin=None, destination=None, airline=None, flight_number=None, howMany=MAX_RECORD_LENGTH, offset=0):
         """
         AirlineFlightSchedules returns flight schedules that have been published by airlines. These schedules are available
         for the recent past as well as up to one year into the future.
@@ -115,7 +115,7 @@ class Client(object):
             "destination": destination,
             "airline": airline,
             "flightno": flight_number,
-            "howMany": how_many,
+            "howMany": howMany,
             "offset": offset,
         }
         results = self._request("AirlineFlightSchedules", data)
@@ -243,7 +243,7 @@ class Client(object):
         }
         return self._request("DecodeRoute", data)
 
-    def arrived(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
+    def arrived(self, airport, howMany=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
         """
         Arrived returns information about flights that have recently arrived for the specified airport and maximum number of
         flights to be returned. Flights are returned from most to least recent. Only flights that arrived within the last 24 hours are considered.
@@ -257,7 +257,7 @@ class Client(object):
         filter	string	can be "ga" to show only general aviation traffic, "airline" to only show airline traffic, or null/empty to show all traffic.
         offset	int	must be an integer value of the offset row count you want the search to start at. Most requests should be 0.
         """
-        data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
+        data = {"airport": airport, "howMany": howMany, "filter": filter, "offset": offset}
         return self._request("Arrived", data)
 
     def delete_alert(self, alert_id=None):
@@ -281,7 +281,7 @@ class Client(object):
             data = {"alert_id": alert_id}
             return self._request("DeleteAlert", data)
 
-    def departed(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
+    def departed(self, airport, howMany=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
         """
         Departed returns information about already departed flights for a specified airport and maximum number of
         flights to be returned. Departed flights are returned in order from most recently to least recently departed.
@@ -296,10 +296,10 @@ class Client(object):
         filter	string	can be "ga" to show only general aviation traffic, "airline" to only show airline traffic, or null/empty to show all traffic.
         offset	int	must be an integer value of the offset row count you want the search to start at. Most requests should be 0.
         """
-        data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
+        data = {"airport": airport, "howMany": howMany, "filter": filter, "offset": offset}
         return self._request("Departed", data)
 
-    def enroute(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
+    def enroute(self, airport, howMany=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
         """
         Enroute returns information about flights already in the air for the
         specified airport and maximum number of flights to be returned. Enroute
@@ -318,10 +318,10 @@ class Client(object):
 
         offset  int must be an integer value of the offset row count you want the search to start at. Most requests should be 0.
         """
-        data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
+        data = {"airport": airport, "howMany": howMany, "filter": filter, "offset": offset}
         return self._request("Enroute", data)
 
-    def fleet_arrived(self, fleet, how_many=MAX_RECORD_LENGTH, offset=0):
+    def fleet_arrived(self, fleet, howMany=MAX_RECORD_LENGTH, offset=0):
         """
         FleetArrived returns information about recently arrived flights belonging to an aircraft fleet. Only flights that have arrived within the last 24 hours are considered. Codeshares and alternate idents are NOT considered.
 
@@ -332,10 +332,10 @@ class Client(object):
         See also FleetScheduled for other fleet tracking functionality.
         """
 
-        data = {"fleet": fleet, "howMany": how_many, "offset": offset}
+        data = {"fleet": fleet, "howMany": howMany, "offset": offset}
         return self._request("FleetArrived", data)
 
-    def fleet_scheduled(self, fleet, how_many=MAX_RECORD_LENGTH, offset=0):
+    def fleet_scheduled(self, fleet, howMany=MAX_RECORD_LENGTH, offset=0):
         """
         FleetScheduled returns information about scheduled flights belonging to an aircraft fleet. Scheduled flights are returned from soonest to furthest in the future to depart. Only flights that have not actually departed, and have a scheduled departure time between 2 hours in the past and 24 hours in the future, are considered. Codeshares and alternate idents are NOT considered.
 
@@ -347,11 +347,11 @@ class Client(object):
 
 
         """
-        data = {"fleet": fleet, "howMany": how_many, "offset": offset}
+        data = {"fleet": fleet, "howMany": howMany, "offset": offset}
         return self._request("FleetScheduled", data)
 
 
-    def flight_info(self, ident, how_many=MAX_RECORD_LENGTH):
+    def flight_info(self, ident, howMany=MAX_RECORD_LENGTH):
         """
         FlightInfo returns information about flights for a specific tail number (e.g., N12345), or ICAO airline code with flight number (e.g., SWA2558).
 
@@ -367,10 +367,10 @@ class Client(object):
         ident	string	requested tail number, or airline with flight number
         howMany	int	maximum number of past flights to obtain. Must be a positive integer value less than or equal to 15, unless SetMaximumResultSize has been called.
         """
-        data = { "ident": ident, "howMany": how_many }
+        data = { "ident": ident, "howMany": howMany }
         return self._request("FlightInfo", data)
 
-    def flight_info_ex(self, ident, how_many=MAX_RECORD_LENGTH, offset=0):
+    def flight_info_ex(self, ident, howMany=MAX_RECORD_LENGTH, offset=0):
         """
         FlightInfoEx returns information about flights for a specific tail number (e.g., N12345), or an ident (typically an ICAO airline with flight number, e.g., SWA2558),
         or a FlightAware-assigned unique flight identifier (e.g. faFlightID returned by another FlightXML function).
@@ -383,7 +383,7 @@ class Client(object):
 
         See FlightInfo for a simpler interface.
         """
-        data = {"ident": ident, "howMany": how_many, "offset": offset}
+        data = {"ident": ident, "howMany": howMany, "offset": offset}
         return self._request("FlightInfoEx", data)
 
     def get_alerts(self):
@@ -594,7 +594,7 @@ class Client(object):
         data = { "origin" : origin, "destination" : destination, "howMany" : howMany, "offset" : offset, "maxDepartureAge" : maxDepartureAge, "maxFileAge" : maxFileAge }
         return self._request("RoutesBetweenAirportsEx", data)
 
-    def scheduled(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
+    def scheduled(self, airport, howMany=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
         """
         Scheduled returns information about scheduled flights (technically,
         filed IFR flights) for a specified airport and a maximum number of
@@ -617,10 +617,10 @@ class Client(object):
 
         offset  int must be an integer value of the offset row count you want the search to start at. Most requests should be 0.
         """
-        data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
+        data = {"airport": airport, "howMany": howMany, "filter": filter, "offset": offset}
         return self._request("Scheduled", data)
 
-    def search(self, parameters={}, how_many=MAX_RECORD_LENGTH, offset=0):
+    def search(self, parameters={}, howMany=MAX_RECORD_LENGTH, offset=0):
         """
         Search performs a query for data on all airborne aircraft to find ones
         matching the search query. Query parameters include a
@@ -677,7 +677,7 @@ class Client(object):
         query = ""
         for key, value in parameters.items():
             query += "-%s %s " % (key, value)
-        data = {"query": query, "howMany": how_many, "offset": offset}
+        data = {"query": query, "howMany": howMany, "offset": offset}
         return self._request("Search", data)
 
     def search_birdseye_in_flight(self):
