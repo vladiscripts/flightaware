@@ -391,7 +391,7 @@ class Client(object):
         Altitude status is 'C' when the flight is more than 200 feet away from its ATC-assigned altitude. (For example, the aircraft is transitioning to its assigned altitude.) Altitude change is 'C' if the aircraft is climbing (compared to the previous position reported), 'D' for descending, and empty if it is level. This happens for VFR flights with flight following, among other things. Timestamp is integer seconds since 1970 (UNIX epoch time).
         This function only returns tracks for recent flights within approximately the last 24 hours. Use the GetHistoricalTrack function to look up a specific past flight rather than just the most recent one. Codeshares and alternate idents are automatically searched.
         """
-        data = {"ident": ident}
+        data = { "ident": ident }
         return self._request("GetLastTrack", data)
 
     def inbound_flight_info(self):
