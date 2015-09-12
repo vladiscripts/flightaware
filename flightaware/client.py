@@ -311,8 +311,21 @@ class Client(object):
         data = {"fleet": fleet, "howMany": how_many, "offset": offset}
         return self._request("FleetArrived", data)
 
-    def fleet_scheduled(self):
-        raise NotImplementedError
+    def fleet_scheduled(self, fleet, how_many=MAX_RECORD_LENGTH, offset=0):
+        """
+        FleetScheduled returns information about scheduled flights belonging to an aircraft fleet. Scheduled flights are returned from soonest to furthest in the future to depart. Only flights that have not actually departed, and have a scheduled departure time between 2 hours in the past and 24 hours in the future, are considered. Codeshares and alternate idents are NOT considered.
+
+        The next_offset value returned advises an application of the next offset to use (if more data is available).
+
+        Times returned are seconds since 1970 (UNIX epoch time).
+
+        See also FleetArrived for other fleet tracking functionality.
+
+
+        """
+        data = {"fleet": fleet, "howMany": how_many, "offset": offset}
+        return self._request("FleetScheduled", data)
+
 
     def flight_info(self, ident, how_many=MAX_RECORD_LENGTH):
         """

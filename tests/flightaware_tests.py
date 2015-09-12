@@ -88,6 +88,11 @@ class TestSequenceFunctions(unittest.TestCase):
         pprint(results)
         self.assertNotIn("error", results)
 
+    def test_fleet_scheduled(self):
+        results = self.client.fleet_scheduled("URF")
+        pprint(results)
+        self.assertNotIn("error", results)
+
     def test_flight_info(self):
         results = self.client.flight_info("N415PW")
         print results
