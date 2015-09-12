@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import unittest
+from pprint import pprint
 from flightaware.client import Client
 
 import ConfigParser
@@ -19,6 +20,11 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def test_decode_route(self):
+        results = self.client.decode_route("KSQL", "SJC V334 SAC SWR", "KTRK")
+        pprint(results)
+        self.assertNotIn("error", results)
 
     def test_flight_info(self):
         results = self.client.flight_info("N415PW")

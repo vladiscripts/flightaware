@@ -227,8 +227,18 @@ class Client(object):
         data = {"faFlightID": fa_flight_id}
         return self._request("DecodeFlightRoute", data)
 
-    def decode_route(self):
-        raise NotImplementedError
+    def decode_route(self, origin, route, destination):
+        """
+        Given an origin airport, destination airport, and a route between them, DecodeRoute returns a "cracked" list of noteworthy navigation points along the planned flight route. The list represents the originally planned route of travel, which may differ slightly from the actual flight path flown. The returned list will include the name, type, latitude, and longitude of each point. Additional reporting points along the route may be automatically included in the returned list. Not all flight routes can be successfully decoded by this function, particularly if the flight is not entirely within the continental U.S. airspace, since this function only has access to navaids within that area.
+
+        For an alternate version of this function that lets you specify an existing flight identifier, see DecodeFlightRoute.
+        """
+        data = {
+            "origin": origin,
+            "route": route,
+            "destination": destination,
+        }
+        return self._request("DecodeRoute", data)
 
     def arrived(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
         """
