@@ -575,7 +575,7 @@ class Client(object):
         Type    Description
         int     returns 1 on success
         """
-        data = {"address": address, "format_type": format_type}
+        data = { "address" : address, "format_type" : format_type}
         return self._request("RegisterAlertEndpoint", data)
 
     def routes_between_airports(self, origin, destination):
