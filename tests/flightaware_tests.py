@@ -171,6 +171,11 @@ class TestSequenceFunctions(unittest.TestCase):
         if verbose: pprint(results)
         self.assertTrue(isinstance(results, (int, long)))
 
+    def test_map_flight(self):
+        results = self.client.map_flight("N415PW", 100, 100)
+        if verbose: pprint(results)
+        self.assertNotIn("error", results)
+
     def test_metar(self):
         results = self.client.metar("BNA")
         self.assertNotIn("error", results)

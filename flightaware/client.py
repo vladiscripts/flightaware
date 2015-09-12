@@ -458,11 +458,14 @@ class Client(object):
         data = { "lat1" : lat1, "lon1" : lon1, "lat2" : lat2, "lon2" : lon2 }
         return self._request("LatLongsToHeading", data)
 
-    def lat_lng_to_heading(self):
-        raise NotImplementedError
+    def map_flight(self, ident, mapHeight, mapWidth):
+        """
+        This function will return a base64 encoded GIF or PNG image (with the height and width as specified in pixels) of the current flight of a specified ident. If the aircraft is not currently in the air, then a blank image may be returned. Codeshares and alternate idents are automatically searched.
 
-    def map_flight(self):
-        raise NotImplementedError
+        See MapFlightEx for a more advanced interface with historical flight capabilities.
+        """
+        data = { "ident" : ident, "mapHeight" : mapHeight, "mapWidth" : mapWidth }
+        return self._request("MapFlight", data)
 
     def map_flight_ex(self):
         raise NotImplementedError
