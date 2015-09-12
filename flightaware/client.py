@@ -467,8 +467,31 @@ class Client(object):
         data = { "ident" : ident, "mapHeight" : mapHeight, "mapWidth" : mapWidth }
         return self._request("MapFlight", data)
 
-    def map_flight_ex(self):
-        raise NotImplementedError
+    def map_flight_ex(self, faFlightID, mapHeight, mapWidth, layer_on, layer_off, show_data_blocks, show_airports, airports_expand_view, latlon_box):
+        """
+        This function will return a base64 encoded GIF or PNG image (with the height and width as specified in pixels) of a specific flight. The flight may be a current or historical flight, but it must be specified using the unique FlightAware-assigned identifier for the desired flight. To obtain the faFlightID, you can use a function such as GetFlightID, FlightInfoEx, or InFlightInfo.
+
+        The layer_on and layer_off arguments are specify what map features to include or exclude. The available layers and its default mode is shown below:
+
+        "US Cities" (Default: off)
+        "european country boundaries" (Default: off)
+        "asia country boundaries" (Default: off)
+        "country boundaries" (Default: on)
+        "US state boundaries" (Default: on)
+        "water" (Default: on)
+        "US urban areas" (Default: off)
+        "US major roads" (Default: on)
+        "radar" (Default: on)
+        "track" (Default: on)
+        "flights" (Default: on)
+        "major airports" (Default: on)
+        "airports" (Default: on)
+        See MapFlight for a simpler interface.
+        """
+        data = { "faFlightID" : faFlightID, "mapHeight" : mapHeight, "mapWidth" : mapWidth, "layer_on" : layer_on, 
+            "layer_off" : layer_off, "show_data_blocks" : show_data_blocks, "show_airports" : show_airports, 
+            "airports_expand_view" : airports_expand_view, "latlon_box" : latlon_box, }
+        return self._request("MapFlightEx", data)
 
     def metar(self, airport):
         """

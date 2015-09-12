@@ -176,6 +176,24 @@ class TestSequenceFunctions(unittest.TestCase):
         if verbose: pprint(results)
         self.assertNotIn("error", results)
 
+    def test_map_flight_ex(self):
+
+        faFlightID = self.client.get_flight_id("SKW2494", 1442040480)
+        if verbose: pprint(faFlightID)
+
+        mapHeight = 100
+        mapWidth = 100 
+        layer_on = ""
+        layer_off = ""
+        show_data_blocks = "true"
+        show_airports = "true"
+        airports_expand_view = "true"
+        latlon_box = ""
+
+        results = self.client.map_flight_ex(faFlightID, mapHeight, mapWidth, layer_on, layer_off, show_data_blocks, show_airports, airports_expand_view, latlon_box)
+        if verbose: pprint(results)
+        self.assertNotIn("error", results)
+
     def test_metar(self):
         results = self.client.metar("BNA")
         self.assertNotIn("error", results)
