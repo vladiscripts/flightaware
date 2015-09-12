@@ -226,6 +226,11 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_routes_between_airports_ex(self):
         results = self.client.routes_between_airports_ex("KSFO", "KLAX")
+        if verbose: pprint(results)
+        self.assertNotIn("error", results)
+
+    def test_scheduled(self):
+        results = self.client.scheduled("KSQL")
         if 1: pprint(results)
         self.assertNotIn("error", results)
 
