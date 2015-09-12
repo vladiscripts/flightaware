@@ -365,6 +365,27 @@ class Client(object):
         data = {"ident": ident, "howMany": how_many, "offset": offset}
         return self._request("FlightInfoEx", data)
 
+    def get_alerts(self):
+        """
+        GetAlerts retrieves all of the FlightXML flight alerts that are
+        currently scheduled for the user.
+
+        The other methods SetAlert, DeleteAlert, and RegisterAlertEndpoint can
+        be used to manage FlightXML flight alerts.
+
+        Note: If other alerts have been defined by the user on the FlightAware
+        website or mobile app, they will also be included in the returned
+        listing.
+
+        Inputs
+            No inputs.
+        Returns
+            Type                Description
+            FlightAlertListing  all defined alerts by the user
+        """
+        return self._request("GetAlerts", {})
+
+
     def get_flight_id(self, ident, departure_datetime):
         """
         GetFlightID looks up the "faFlightID" for a given ident and departure time. This value is a unique identifier assigned by
@@ -584,28 +605,6 @@ class Client(object):
         """
         data = {"zipcode": zipcode}
         return self._request("ZipcodeInfo", data)
-
-    def get_alerts(self):
-        """
-        GetAlerts retrieves all of the FlightXML flight alerts that are
-        currently scheduled for the user.
-
-        The other methods SetAlert, DeleteAlert, and RegisterAlertEndpoint can
-        be used to manage FlightXML flight alerts.
-
-        Note: If other alerts have been defined by the user on the FlightAware
-        website or mobile app, they will also be included in the returned
-        listing.
-
-        Inputs
-
-        No inputs.
-        Returns
-
-        Type    Description
-        FlightAlertListing  all defined alerts by the user
-        """
-        return self._request("GetAlerts", {})
 
     def delete_alert(self, alert_id=None):
         """

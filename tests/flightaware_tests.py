@@ -105,6 +105,11 @@ class TestSequenceFunctions(unittest.TestCase):
         if verbose: pprint(results)
         self.assertNotIn("error", results)
 
+    def test_get_alerts(self):
+        results = self.client.get_alerts()
+        if verbose: pprint(results)
+        self.assertNotIn("error", results)
+
     def test_get_flight_id(self):
         results = self.client.get_flight_id("N415PW", 1442008560)
         if verbose: pprint(results)
