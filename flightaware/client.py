@@ -677,7 +677,7 @@ class Client(object):
         query = ""
         for key, value in parameters.items():
             query += "-%s %s " % (key, value)
-        data = {"query": query, "howMany": howMany, "offset": offset}
+        data = { "query" : query, "howMany" : howMany, "offset" : offset}
         return self._request("Search", data)
 
     def search_birdseye_in_flight(self):
