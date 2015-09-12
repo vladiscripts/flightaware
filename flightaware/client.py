@@ -425,8 +425,17 @@ class Client(object):
         data = { "ident" : ident }
         return self._request("GetLastTrack", data)
 
-    def inbound_flight_info(self):
-        raise NotImplementedError
+    def inbound_flight_info(self, faFlightID):
+        """
+        InboundFlightInfo returns information about the flight being served by the same aircraft that will service a future flight. To obtain the faFlightID, you can use a function such as GetFlightID, FlightInfoEx, or InFlightInfo.
+
+        The inbound flight can only be determined with accuracy for some commercial airlines. If the inbound flight cannot be determined, an error will be returned.
+
+        Times are in integer seconds since 1970 (UNIX epoch time), except for estimated time enroute, which is in hours and minutes.
+        """
+        data = { "faFlightID" : faFlightID }
+        return self._request("InboundFlightInfo", data)
+
 
     def in_flight_info(self, ident):
         """
