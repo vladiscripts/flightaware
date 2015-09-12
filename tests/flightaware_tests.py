@@ -231,8 +231,22 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_scheduled(self):
         results = self.client.scheduled("KSQL")
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
+
+    def test_search(self):
+        queries = [
+            { "type" : "B77*" },
+            { "belowAltitude" : 100, "aboveGroundspeed" : 200 },
+            { "destination" : "LAX", "prefix" : "H" },
+            { "idents" : "UAL*", "type" : "B73*" },
+        ]
+
+        for parameters in queries:
+            if 1: pprint(parameters)
+            results = self.client.search(parameters, 1)
+            if 1: pprint(results)
+            self.assertNotIn("error", results)
 
     def test_zipcode_info(self):
         results = self.client.zipcode_info("37221")
