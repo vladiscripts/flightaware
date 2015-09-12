@@ -1,6 +1,7 @@
 import os
 import datetime
 import logging
+import pytz
 
 import requests
 from requests.auth import HTTPBasicAuth
@@ -9,14 +10,16 @@ logger = logging.getLogger("flightaware.client")
 
 BASE_URL = "http://flightxml.flightaware.com/json/FlightXML2/"
 MAX_RECORD_LENGTH = 15
-EPOCH = datetime.datetime(1970, 1, 1)
-
+EPOCH = datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)
 
 def to_unix_timestamp(val):
     if val:
-        if not isinstance(val, datetime.datetime):
+        if isinstance(val, datetime.datetime):
+            output = int((val - EPOCH).total_seconds())
+        elif isinstance(val, (int, long)):
+            output = val
+        else:
             raise ValueError("input must be of type datetime")
-        output = int((val - EPOCH).total_seconds())
     else:
         # Just bypass
         output = None
@@ -372,15 +375,12 @@ class Client(object):
         is returned. Codeshares and alternate idents are automatically searched.
 
 
-        ident	string	requested tail number
-        departureTime	int	time and date of the desired flight, UNIX epoch seconds since 1970
+        ident          string   requested tail number
+        departureTime  int      time and date of the desired flight, UNIX epoch seconds since 1970
         """
-        data = {
-            "ident": ident,
-            "departureTime": to_unix_timestamp(departure_datetime),
-        }
-        return self._request("GetFlightID", data)
 
+        data = { "ident": ident, "departureTime": to_unix_timestamp(departure_datetime) }
+        return self._request("GetFlightID", data)
 
     def get_historical_track(self):
         raise NotImplementedError

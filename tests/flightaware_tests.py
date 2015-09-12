@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
 import unittest
+import pytz
 from pprint import pprint
+from datetime import datetime, timedelta
 from flightaware.client import Client
 
 import ConfigParser
@@ -104,9 +105,18 @@ class TestSequenceFunctions(unittest.TestCase):
         if verbose: pprint(results)
         self.assertNotIn("error", results)
 
+    def test_get_flight_id(self):
+        results = self.client.get_flight_id("N415PW", 1442008560)
+        if verbose: pprint(results)
+        self.assertNotIn("error", results)
+
+        results = self.client.get_flight_id("N415PW", datetime.fromtimestamp(1442008560, tz=pytz.utc))
+        if verbose: pprint(results)
+        self.assertNotIn("error", results)
+
     def test_get_flight_info(self):
-        start = datetime.now() + timedelta(days=2)
-        end = datetime.now() + timedelta(days=3)
+        start = datetime.now(tz=pytz.utc) + timedelta(days=2)
+        end = datetime.now(tz=pytz.utc) + timedelta(days=3)
         results = self.client.airline_flight_schedules(
             start_date=start,
             end_date=end,
