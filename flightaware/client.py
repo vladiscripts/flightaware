@@ -403,8 +403,18 @@ class Client(object):
         data = { "ident": ident, "departureTime": to_unix_timestamp(departure_datetime) }
         return self._request("GetFlightID", data)
 
-    def get_historical_track(self):
-        raise NotImplementedError
+    def get_historical_track(self, faFlightID):
+        """
+        GetHistoricalTrack looks up a past flight's track log by its unique identifier. To obtain the faFlightID, you can use a function such as GetFlightID, FlightInfoEx, or InFlightInfo.
+
+        This function returns an array of positions, with each including the timestamp, longitude, latitude, groundspeed, altitude, altitudestatus, updatetype, and altitudechange. Altitude is in hundreds of feet or Flight Level where appropriate, see our FAQ about flight levels. Also included is altitude status, update type, and altitude change.
+
+        Altitude status is 'C' when the flight is more than 200 feet away from its ATC-assigned altitude. (For example, the aircraft is transitioning to its assigned altitude.) Altitude change is 'C' if the aircraft is climbing (compared to the previous position reported), 'D' for descending, and empty if it is level. This happens for VFR flights with flight following, among other things. Timestamp is integer seconds since 1970 (UNIX epoch time).
+
+        Use the GetLastTrack function to look up just the most recent flight rather than a specific historical one.
+        """
+        data = { "faFlightID" : faFlightID }
+        return self._request("GetHistoricalTrack", data)
 
     def get_last_track(self, ident):
         """

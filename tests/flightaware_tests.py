@@ -135,6 +135,11 @@ class TestSequenceFunctions(unittest.TestCase):
             self.assertIn("arrival_time", result)
             self.assertIn("departure_time", result)
 
+    def test_get_historical_track(self):
+        results = self.client.get_historical_track("N415PW")
+        if verbose: pprint(results)
+        self.assertNotIn("error", results)
+
     def test_metar(self):
         results = self.client.metar("BNA")
         self.assertNotIn("error", results)
