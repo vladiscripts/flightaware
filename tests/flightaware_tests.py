@@ -207,6 +207,18 @@ class TestSequenceFunctions(unittest.TestCase):
         if verbose: pprint(results)
         self.assertNotIn("error", results)
 
+    def test_register_alert_endpoint(self):
+        '''
+        #
+        # XXX:  Need to figure out how to test this without disrupting the developer's alerts.
+        # Ideally, there'd be an API to get the current alert endpoint.
+        #
+
+        results = self.client.register_alert_endpoint("http://www.example.com")
+        if verbose: pprint(results)
+        self.assertNotIn("error", results)
+        '''
+
     def test_zipcode_info(self):
         results = self.client.zipcode_info("37221")
         self.assertNotIn("error", results)
