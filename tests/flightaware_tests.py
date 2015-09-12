@@ -219,6 +219,11 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertNotIn("error", results)
         '''
 
+    def test_routes_between_airports(self):
+        results = self.client.routes_between_airports("KSFO", "KLAX")
+        if 1: pprint(results)
+        self.assertNotIn("error", results)
+
     def test_zipcode_info(self):
         results = self.client.zipcode_info("37221")
         self.assertNotIn("error", results)
