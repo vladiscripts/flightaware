@@ -582,11 +582,17 @@ class Client(object):
         """
         RoutesBetweenAirports returns information about assigned IFR routings between two airports. For each known routing, the route, number of times that route has been assigned, and the filed altitude (measured in hundreds of feet or Flight Level) are returned. Only flights that departed within the last 6 hours and flight plans filed within the last 3 days are considered.
         """
-        data = {"origin": origin, "destination": destination}
+        data = { "origin" : origin, "destination" : destination }
         return self._request("RoutesBetweenAirports", data)
 
-    def routes_between_airports_ex(self):
-        raise NotImplementedError
+    def routes_between_airports_ex(self, origin, destination, howMany=MAX_RECORD_LENGTH, offset=0, maxDepartureAge="3 days", maxFileAge="6 days"):
+        """
+        RoutesBetweenAirportsEx returns information about assigned IFR routings between two airports. This is an extended version of RoutesBetweenAirports that allows you to specify the maximum age of flights to consider. For each known routing, the route, number of times that route has been assigned, the filed altitude (lowest and highest among found plans, measured in 100 ft intervals), and the most recent filed departure date/time are returned.
+
+        See RoutesBetweenAirports for a simpler interface.
+        """
+        data = { "origin" : origin, "destination" : destination, "howMany" : howMany, "offset" : offset, "maxDepartureAge" : maxDepartureAge, "maxFileAge" : maxFileAge }
+        return self._request("RoutesBetweenAirportsEx", data)
 
     def scheduled(self, airport, how_many=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
         """
