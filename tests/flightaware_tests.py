@@ -202,6 +202,11 @@ class TestSequenceFunctions(unittest.TestCase):
         results = self.client.metar_ex("BNA")
         self.assertNotIn("error", results)
 
+    def test_ntaf(self):
+        results = self.client.ntaf("KSFO")
+        if verbose: pprint(results)
+        self.assertNotIn("error", results)
+
     def test_zipcode_info(self):
         results = self.client.zipcode_info("37221")
         self.assertNotIn("error", results)
