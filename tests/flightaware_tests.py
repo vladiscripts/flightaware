@@ -161,6 +161,11 @@ class TestSequenceFunctions(unittest.TestCase):
         if verbose: pprint(results)
         self.assertNotIn("error", results)
 
+    def test_lat_longs_to_distance(self):
+        results = self.client.lat_longs_to_distance(37.3626667, -121.9291111, 33.9425003, -118.4080736)
+        if 1: pprint(results)
+        self.assertTrue(isinstance(results, (int, long)))
+
     def test_metar(self):
         results = self.client.metar("BNA")
         self.assertNotIn("error", results)

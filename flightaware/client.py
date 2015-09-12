@@ -444,8 +444,12 @@ class Client(object):
         data = {"ident" : ident}
         return self._request("InFlightInfo", data)
 
-    def lat_lng_to_distance(self):
-        raise NotImplementedError
+    def lat_longs_to_distance(self, lat1, lon1, lat2, lon2):
+        """
+        Given two latitudes and longitudes, lat1 lon1 lat2 and lon2, respectively, determine the great circle distance between those positions in miles. The returned distance is rounded to the nearest whole mile.
+        """
+        data = { "lat1" : lat1, "lon1" : lon1, "lat2" : lat2, "lon2" : lon2 }
+        return self._request("LatLongsToDistance", data)
 
     def lat_lng_to_heading(self):
         raise NotImplementedError
