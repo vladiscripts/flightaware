@@ -451,6 +451,13 @@ class Client(object):
         data = { "lat1" : lat1, "lon1" : lon1, "lat2" : lat2, "lon2" : lon2 }
         return self._request("LatLongsToDistance", data)
 
+    def lat_longs_to_heading(self, lat1, lon1, lat2, lon2):
+        """
+        Given two latitudes and longitudes, lat1 lon1 lat2 and lon2, respectively, calculate and return the initial compass heading (where 360 is North) from position one to position two. Quite accurate for relatively short distances but since it assumes the earth is a sphere rather than on irregular oblate sphereoid may be inaccurate for flights around a good chunk of the world, etc.
+        """
+        data = { "lat1" : lat1, "lon1" : lon1, "lat2" : lat2, "lon2" : lon2 }
+        return self._request("LatLongsToHeading", data)
+
     def lat_lng_to_heading(self):
         raise NotImplementedError
 

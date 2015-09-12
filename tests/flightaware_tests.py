@@ -163,7 +163,12 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_lat_longs_to_distance(self):
         results = self.client.lat_longs_to_distance(37.3626667, -121.9291111, 33.9425003, -118.4080736)
-        if 1: pprint(results)
+        if verbose: pprint(results)
+        self.assertTrue(isinstance(results, (int, long)))
+
+    def test_lat_longs_to_heading(self):
+        results = self.client.lat_longs_to_heading(37.3626667, -121.9291111, 33.9425003, -118.4080736)
+        if verbose: pprint(results)
         self.assertTrue(isinstance(results, (int, long)))
 
     def test_metar(self):
