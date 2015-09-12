@@ -441,7 +441,7 @@ class Client(object):
         """
         InFlightInfo looks up a specific tail number (e.g., N12345) or ICAO airline and flight number (e.g., SWA2558) and returns current position/direction/speed information. It is only useful for currently airborne flights within approximately the last 24 hours. Codeshares and alternate idents are automatically searched.
         """
-        data = {"ident": ident}
+        data = {"ident" : ident}
         return self._request("InFlightInfo", data)
 
     def lat_lng_to_distance(self):
