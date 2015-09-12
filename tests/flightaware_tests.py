@@ -143,9 +143,9 @@ class TestSequenceFunctions(unittest.TestCase):
         if verbose: pprint(results)
         self.assertNotIn("error", results)
 
-    def test_last_track(self):
+    def test_get_last_track(self):
         results = self.client.get_last_track("N415PW")
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_metar(self):
