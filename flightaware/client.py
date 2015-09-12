@@ -343,13 +343,10 @@ class Client(object):
         ident	string	requested tail number, or airline with flight number
         howMany	int	maximum number of past flights to obtain. Must be a positive integer value less than or equal to 15, unless SetMaximumResultSize has been called.
         """
-        data = {
-            "ident": ident,
-            "howMany": how_many
-        }
+        data = { "ident": ident, "howMany": how_many }
         return self._request("FlightInfo", data)
 
-    def flight_info_ex(self):
+    def flight_info_ex(self, ident, how_many=MAX_RECORD_LENGTH, offset=0):
         """
         FlightInfoEx returns information about flights for a specific tail number (e.g., N12345), or an ident (typically an ICAO airline with flight number, e.g., SWA2558),
         or a FlightAware-assigned unique flight identifier (e.g. faFlightID returned by another FlightXML function).
@@ -362,7 +359,8 @@ class Client(object):
 
         See FlightInfo for a simpler interface.
         """
-        raise NotImplementedError
+        data = {"ident": ident, "howMany": how_many, "offset": offset}
+        return self._request("FlightInfoEx", data)
 
     def get_flight_id(self, ident, departure_datetime):
         """
