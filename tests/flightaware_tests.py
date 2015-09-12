@@ -21,6 +21,11 @@ class TestSequenceFunctions(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_fleet_arrived(self):
+        results = self.client.fleet_arrived("URF")
+        pprint(results)
+        self.assertNotIn("error", results)
+
     def test_decode_route(self):
         results = self.client.decode_route("KSQL", "SJC V334 SAC SWR", "KTRK")
         pprint(results)

@@ -297,8 +297,19 @@ class Client(object):
         data = {"airport": airport, "howMany": how_many, "filter": filter, "offset": offset}
         return self._request("Enroute", data)
 
-    def fleet_arrived(self):
-        raise NotImplementedError
+    def fleet_arrived(self, fleet, how_many=MAX_RECORD_LENGTH, offset=0):
+        """
+        FleetArrived returns information about recently arrived flights belonging to an aircraft fleet. Only flights that have arrived within the last 24 hours are considered. Codeshares and alternate idents are NOT considered.
+
+        The next_offset value returned advises an application of the next offset to use (if more data is available).
+
+        Times returned are seconds since 1970 (UNIX epoch seconds).
+
+        See also FleetScheduled for other fleet tracking functionality.
+        """
+
+        data = {"fleet": fleet, "howMany": how_many, "offset": offset}
+        return self._request("FleetArrived", data)
 
     def fleet_scheduled(self):
         raise NotImplementedError
