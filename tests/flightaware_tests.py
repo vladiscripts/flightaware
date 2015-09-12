@@ -9,6 +9,7 @@ config = ConfigParser.RawConfigParser()
 config.read("developer.cfg")
 username = config.get("test settings", "username")
 api_key = config.get("test settings", "api_key")
+verbose = config.getboolean("test settings", "verbose")
 
 print "Using username => %s" % username
 print "Using api_key => %s" % api_key
@@ -64,7 +65,7 @@ class TestSequenceFunctions(unittest.TestCase):
 
         results = self.client.airport_info("KBNA")
         self.assertNotIn("error", results)
-        print results
+        if verbose: print results
 
     def test_all_airlines(self):
         results = self.client.all_airlines()
@@ -80,22 +81,22 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_decode_route(self):
         results = self.client.decode_route("KSQL", "SJC V334 SAC SWR", "KTRK")
-        pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_fleet_arrived(self):
         results = self.client.fleet_arrived("URF")
-        pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_fleet_scheduled(self):
         results = self.client.fleet_scheduled("URF")
-        pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_flight_info(self):
         results = self.client.flight_info("N415PW")
-        print results
+        if verbose: print results
         self.assertNotIn("error", results)
 
     def test_get_flight_info(self):
@@ -107,7 +108,7 @@ class TestSequenceFunctions(unittest.TestCase):
             origin="BNA",
             destination="ATL",
         )
-        print results
+        if verbose: print results
         self.assertNotIn("error", results)
 
         for result in results:
