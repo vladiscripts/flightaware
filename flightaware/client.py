@@ -930,15 +930,12 @@ class Client(object):
 
     def taf(self, airport):
         """
-
-        XXX:  this isn't part of the FlightAware API -- just a duplicate of NTaf.  It should be deprecated.
-
         Given an airport, return the terminal area forecast, if available.
         See NTaf for a more advanced interface.
         airport	string	the ICAO airport ID (e.g., KLAX, KSFO, KIAH, KHOU, KJFK, KEWR, KORD, KATL, etc.)
         """
         data = { "airport" : airport }
-        return self._request("NTaf", data)
+        return self._request("Taf", data)
 
     def tail_owner(self, ident):
         """

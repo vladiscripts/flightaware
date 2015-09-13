@@ -314,9 +314,6 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertTrue(isinstance(results, (int, long)))
 
     def test_taf(self):
-        """
-        XXX:  this isn't part of the FlightAware API -- just a duplicate of NTaf.  It should be deprecated.
-        """
         results = self.client.taf("KSFO")
         if 1: pprint(results)
         self.assertNotIn("error", results)
