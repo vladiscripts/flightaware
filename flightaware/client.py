@@ -813,8 +813,15 @@ class Client(object):
         data = { "query" : query, "uniqueFlights" : unique, "howMany" : howMany, "offset" : offset}
         return self._request("SearchBirdseyePositions", data)
 
-    def search_count(self):
-        raise NotImplementedError
+    def search_count(self, parameters={}):
+        """
+        SearchCount works like Search but returns a count of matching flights rather than information about each flight.
+        """
+        query = ""
+        for key, value in parameters.items():
+            query += "-%s %s " % (key, value)
+        data = { "query" : query }
+        return self._request("SearchCount", data)
 
     def set_alert(self, alert_id=0, ident=None, origin=None, destination=None,
         aircrafttype=None, date_start=None, date_end=None, channels=[],

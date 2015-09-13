@@ -278,11 +278,25 @@ class TestSequenceFunctions(unittest.TestCase):
         ]
 
         for (query,comment) in queries:
-            if 1: print "SearchBirdseyePositions: ", comment, "(", query, ")"
+            if verbose: print "SearchBirdseyePositions: ", comment, "(", query, ")"
             results = self.client.search_birdseye_positions(query, True, 1)
-            if 1: pprint(results)
+            if verbose: pprint(results)
             if u'error' in results and results[u'error'] != u'no results':
                 self.assertNotIn("error", results)
+
+    def test_search_count(self):
+        queries = [
+            { "type" : "B77*" },
+            { "belowAltitude" : 100, "aboveGroundspeed" : 200 },
+            { "destination" : "LAX", "prefix" : "H" },
+            { "idents" : "UAL*", "type" : "B73*" },
+        ]
+
+        for parameters in queries:
+            if 1: pprint(parameters)
+            results = self.client.search_count(parameters)
+            if 1: pprint(results)
+            self.assertTrue(isinstance(results, (int, long)))
 
     def test_zipcode_info(self):
         results = self.client.zipcode_info("37221")
