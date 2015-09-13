@@ -293,10 +293,25 @@ class TestSequenceFunctions(unittest.TestCase):
         ]
 
         for parameters in queries:
-            if 1: pprint(parameters)
+            if verbose: pprint(parameters)
             results = self.client.search_count(parameters)
-            if 1: pprint(results)
+            if verbose: pprint(results)
             self.assertTrue(isinstance(results, (int, long)))
+
+    def test_set_alert(self):
+        """
+        XXX:  Need to implement this unit test.
+        """
+
+    def test_set_maximum_result_sizes(self):
+        """
+        XXX:  Need to implement this unit test.
+        """
+
+    def test_set_maximum_result_size(self):
+        results = self.client.set_maximum_result_size(15)
+        if 1: pprint(results)
+        self.assertTrue(isinstance(results, (int, long)))
 
     def test_zipcode_info(self):
         results = self.client.zipcode_info("37221")

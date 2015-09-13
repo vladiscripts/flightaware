@@ -919,8 +919,14 @@ class Client(object):
 
         return self._request("SetAlert", data)
 
-    def set_maximum_result_sizes(self):
-        raise NotImplementedError
+    def set_maximum_result_size(self, max_size):
+        """
+        SetMaximumResultSize modifies the maximum result count returned by other FlightXML methods. Many FlightXML methods that return lists limit the number of results to 15 records for performance reasons, even if you specify a larger number to its "howMany" argument. Using this method, you can raise the limit allowed for the "howMany" argument for all subsequent FlightXML methods invoked using your account. Once invoked, the last specified max_size is remembered for your account until the next call to SetMaximumResultSize; it is not necessary to call this function repeatedly.
+
+        Any request that has a "howMany" argument and returns more than 15 records will be billed at a rate equivalent to the actual number of results returned divided by 15, rounded up. For example, if you call SetMaximumResultSize with a max_size of 100, then call FlightInfo with howMany of 45, but it only returns 35 records, you will be charged the equivalent of calling FlightInfo a total of 3 times, or 1+int(35/15).
+        """
+        data = { "max_size" : max_size }
+        return self._request("SetMaximumResultSize", data)
 
     def taf(self, airport):
         """
@@ -928,7 +934,7 @@ class Client(object):
         See NTaf for a more advanced interface.
         airport	string	the ICAO airport ID (e.g., KLAX, KSFO, KIAH, KHOU, KJFK, KEWR, KORD, KATL, etc.)
         """
-        data = {"airport": airport}
+        data = { "airport" : airport }
         return self._request("NTaf", data)
 
     def tail_owner(self, ident):
