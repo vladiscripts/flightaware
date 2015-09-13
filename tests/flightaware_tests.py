@@ -320,7 +320,7 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_tail_owner(self):
         results = self.client.tail_owner("N415PW")
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_zipcode_info(self):
