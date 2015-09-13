@@ -64,3 +64,17 @@ Ran 41 tests in 38.163s
 FAILED (failures=2)
 ```
 The unit tests should handle the first case, but the second case is reported correctly -- the test case failed because the FlightAware.com service call failed unexpectedly.
+
+## Examples
+Follow the instructions above to create a ```developer.cfg``` file in the ```tests``` directory.
+
+```
+cd examples
+cp ../tests/developer.cfg .
+```
+
+### weather.py
+This example shows the output of the four weather APIs:  METAR (Metar), Extended METAR (MetarEx), TAF (Taf), and Extended TAF (Ntaf).
+```
+python weather.py
+```
