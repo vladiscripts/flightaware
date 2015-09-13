@@ -60,15 +60,20 @@ class Client(object):
         logger.debug("POST\n%s\n%s\n", url, data)
 
         r = requests.post(url=url, data=data, auth=self.auth, headers=self.headers)
-        result = r.json()
-        final = result
-        key = "{}Result".format(method)
-        if key in result:
-            final = result[key]
-            # Test if final is a dict before iterating
-            if type(final) is dict and "data" in final:
-                final = final["data"]
-        return final
+
+        # Handle the exception where the response isn't JSON formatted
+        try:
+            result = r.json()
+            final = result
+            key = "{}Result".format(method)
+            if key in result:
+                final = result[key]
+                # Test if final is a dict before iterating
+                if type(final) is dict and "data" in final:
+                    final = final["data"]
+            return final
+        except:
+            return { 'error' : 'internal server error', 'text' : r.text }
 
     def aircraft_type(self, aircraft_type):
         """
@@ -767,8 +772,46 @@ class Client(object):
         data = { "query" : query, "howMany" : howMany, "offset" : offset}
         return self._request("SearchBirdseyeInFlight", data)
 
-    def search_birdseye_positions(self):
-        raise NotImplementedError
+    def search_birdseye_positions(self, query, uniqueFlights=False, howMany=MAX_RECORD_LENGTH, offset=0):
+        """
+        SearchBirdseyePositions performs a query for aircraft flightpath datapoints matching the search query. This allows you to locate flights that have ever flown within a specific a latitude/longitude box, groundspeed, and altitude. It takes search terms in a single string comprising of {operator key value} elements and returns an array of flight structures. Each search term must be enclosed in curly braces. Multiple search terms can be combined in an implicit boolean "and" by separating the terms with at least one space. This function only searches flight data representing approximately the last 24 hours.
+
+        The supported operators include (note that operators take different numbers of arguments):
+
+        false — results must have the specified boolean key set to a value of false. Example: {false preferred}
+        true — results must have the specified boolean key set to a value of true. Example: {true preferred}
+        null — results must have the specified key set to a null value. Example: {null waypoints}
+        notnull — results must have the specified key not set to a null value. Example: {notnull aircraftType}
+        = — results must have a key that exactly matches the specified value. Example: {= fp C172}
+        != — results must have a key that must not match the specified value. Example: {!= prefix H}
+        < — results must have a key that is lexicographically less-than a specified value. Example: {< arrivalTime 1276811040}
+        > — results must have a key that is lexicographically greater-than a specified value. Example: {> circles 5}
+        <= — results must have a key that is lexicographically less-than-or-equal-to a specified value. Example: {<= alt 8000}
+        >= — results must have a key that is lexicographically greater-than-or-equal-to a specified value.
+        match — results must have a key that matches against a case-insensitive wildcard pattern. Example: {match ident COA*}
+        notmatch — results must have a key that does not match against a case-insensitive wildcard pattern. Example: {notmatch aircraftType B76*}
+        range — results must have a key that is numerically between the two specified values. Example: {range alt 8000 20000}
+        in — results must have a key that exactly matches one of the specified values. Example: {in orig {KLAX KBUR KSNA KLGB}}
+        The supported key names include (note that not all of these key names are returned in the result structure, and some have slightly different names):
+
+        alt — Altitude, measured in hundreds of feet or Flight Level.
+        altChar — a one-character code indicating the change in altitude.
+        altMax — Altitude, measured in hundreds of feet or Flight Level.
+        cid — a three-character cid code
+        cidfac — a four-character cidfac code
+        clock — UNIX epoch timestamp seconds since 1970
+        facility — a four-character facility code
+        fp — unique identifier assigned by FlightAware for this flight, aka faFlightID.
+        gs — ground speed, measured in kts.
+        lat — latitude of the reported position.
+        lon — longitude of the reported position
+        preferred — boolean indicator of position quality
+        recvd — UNIX epoch timestamp seconds since 1970
+        updateType — source of the last reported position (TP=projected, TO=oceanic, TZ=radar, TA=broadcast)
+        """
+        unique = 'true' if uniqueFlights else 'false'
+        data = { "query" : query, "uniqueFlights" : unique, "howMany" : howMany, "offset" : offset}
+        return self._request("SearchBirdseyePositions", data)
 
     def search_count(self):
         raise NotImplementedError

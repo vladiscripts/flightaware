@@ -251,19 +251,35 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_search_birdseye_in_flight(self):
         queries = [
-            { "{< alt 100} {> gs 200}", "All aircraft below ten-thousand feet with a groundspeed over 200 kts" },
-            { "{match aircraftType B77*}", "All in-air Boeing 777s" },
-            { "{= dest KLAX} {= prefix H}", "All aircraft heading to Los Angeles International Airport (LAX) that are \"heavy\" aircraft" },
-            { "{match ident UAL*} {match aircraftType B73*}", "All United Airlines flights in Boeing 737s" },
-            { "{true lifeguard}", "All \"lifeguard\" rescue flights" },
-            { "{in orig {KLAX KBUR KSNA KLGB KVNY KSMO KLGB KONT}} {in dest {KJFK KEWR KLGA KTEB KHPN}}", "All flights between Los Angeles area and New York area" },
-            { "{range lat 36.897669 40.897669} {range lon -79.03655 -75.03655}", "All flights with a last reported position +/- 2 degrees of the Whitehouse" },
-            { "{> lastPositionTime 1278610758} {true inAir} {!= physClass P} {> circles 3}", "All flights that have a reported position after a specified epoch time, are still in the air, are not piston class, and have made several circular flight patterns (potentially in distress)" },
+            [ "{< alt 100} {> gs 200}", "All aircraft below ten-thousand feet with a groundspeed over 200 kts" ],
+            [ "{match aircraftType B77*}", "All in-air Boeing 777s" ],
+            [ "{= dest KLAX} {= prefix H}", "All aircraft heading to Los Angeles International Airport (LAX) that are \"heavy\" aircraft" ],
+            [ "{match ident UAL*} {match aircraftType B73*}", "All United Airlines flights in Boeing 737s" ],
+            [ "{true lifeguard}", "All \"lifeguard\" rescue flights" ],
+            [ "{in orig {KLAX KBUR KSNA KLGB KVNY KSMO KLGB KONT}} {in dest {KJFK KEWR KLGA KTEB KHPN}}", "All flights between Los Angeles area and New York area" ],
+            [ "{range lat 36.897669 40.897669} {range lon -79.03655 -75.03655}", "All flights with a last reported position +/- 2 degrees of the Whitehouse" ],
+            [ "{> lastPositionTime 1278610758} {true inAir} {!= physClass P} {> circles 3}", "All flights that have a reported position after a specified epoch time, are still in the air, are not piston class, and have made several circular flight patterns (potentially in distress)" ],
         ]
 
         for (query,comment) in queries:
-            if 1: print "SearchBirdseyeInFlight: ", comment, "(", query, ")"
+            if verbose: print "SearchBirdseyeInFlight: ", comment, "(", query, ")"
             results = self.client.search_birdseye_in_flight(query, 1)
+            if verbose: pprint(results)
+            if u'error' in results and results[u'error'] != u'no results':
+                self.assertNotIn("error", results)
+
+    def test_search_birdseye_positions(self):
+        queries = [
+            [ "{< alt 100} {> gs 200}", "All flight positions below ten-thousand feet with a groundspeed over 200 kts" ],
+            [ "{match fp ASA*}", "All Alaska Airlines flight positions" ],
+            [ "{match fp ASA*} {> lat 45}", "All Alaska Airlines flight positions north of the 45th parallel" ],
+            [ "{range lat 36.897669 40.897669} {range lon -79.03655 -75.03655}", "All flight positions +/- 2 degrees of the lat/lon of the Whitehouse" ],
+            [ "{= fp N415PW-1442008613-adhoc-0}", "All flight positions for a specific flight identifier (faFlightID)" ],
+        ]
+
+        for (query,comment) in queries:
+            if 1: print "SearchBirdseyePositions: ", comment, "(", query, ")"
+            results = self.client.search_birdseye_positions(query, True, 1)
             if 1: pprint(results)
             if u'error' in results and results[u'error'] != u'no results':
                 self.assertNotIn("error", results)
