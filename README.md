@@ -1,6 +1,6 @@
 # flightaware - Python RESTful API for FlightAware.com
 
-This is a python based wrapper which simplifies communication with the FlightAware.com RESTful APIs.  Documentation for the APIs can be found at:   http://flightaware.com/commercial/flightxml/explorer.
+This is a python based wrapper which simplifies communication with the FlightAware.com RESTful APIs.  Documentation for the APIs can be found at:  http://flightaware.com/commercial/flightxml/explorer
 
 In order to use these APIs, you'll need to be a commercial subscriber to the FlightAware.com service, have a user name, and an API key.
 
