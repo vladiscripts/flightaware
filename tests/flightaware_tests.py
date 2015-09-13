@@ -310,8 +310,16 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_set_maximum_result_size(self):
         results = self.client.set_maximum_result_size(15)
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertTrue(isinstance(results, (int, long)))
+
+    def test_taf(self):
+        """
+        XXX:  this isn't part of the FlightAware API -- just a duplicate of NTaf.  It should be deprecated.
+        """
+        results = self.client.taf("KSFO")
+        if 1: pprint(results)
+        self.assertNotIn("error", results)
 
     def test_zipcode_info(self):
         results = self.client.zipcode_info("37221")
