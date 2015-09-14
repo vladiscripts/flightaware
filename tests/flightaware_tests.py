@@ -99,11 +99,18 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_all_airlines(self):
         results = self.client.all_airlines()
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_all_airports(self):
         results = self.client.all_airports()
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
+
+    def test_block_indent_check(self):
+        results = self.client.block_indent_check("N415PW")
+        if 1: pprint(results)
+        self.assertTrue(isinstance(results, (int, long)))
 
     def test_count_airport_operations(self):
         results = self.client.count_airport_operations("BNA")
