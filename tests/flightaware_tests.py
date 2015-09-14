@@ -48,7 +48,7 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_aircraft_type(self):
         results = self.client.aircraft_type("GALX")
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_airline_flight_info(self):
@@ -56,7 +56,7 @@ class TestSequenceFunctions(unittest.TestCase):
         if verbose: pprint(faFlightID)
 
         results = self.client.airline_flight_info(faFlightID)
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_airline_flight_schedules(self):
@@ -68,7 +68,7 @@ class TestSequenceFunctions(unittest.TestCase):
             origin="KSFO",
             destination="KLAX",
         )
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
         for result in results:
@@ -81,20 +81,20 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_airline_insight(self):
         results = self.client.airline_insight("BNA", "ATL")
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_airport_info(self):
         results = self.client.airport_info("KasdfBNA")
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertIn("error", results)
 
         results = self.client.airport_info("BNA")
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
         results = self.client.airport_info("KBNA")
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_all_airlines(self):
