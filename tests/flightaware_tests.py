@@ -109,7 +109,7 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_arrived(self):
         results = self.client.arrived("KSFO")
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_block_indent_check(self):
