@@ -122,6 +122,14 @@ class TestSequenceFunctions(unittest.TestCase):
         if verbose: pprint(results)
         self.assertNotIn("error", results)
 
+    def test_decode_flight_route(self):
+        faFlightID = self.client.get_flight_id("N415PW", 1442008560)
+        if verbose: pprint(faFlightID)
+
+        results = self.client.decode_flight_route(faFlightID)
+        if 1: pprint(results)
+        self.assertNotIn("error", results)
+
     def test_decode_route(self):
         results = self.client.decode_route("KSQL", "SJC V334 SAC SWR", "KTRK")
         if verbose: pprint(results)
