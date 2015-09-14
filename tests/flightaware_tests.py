@@ -119,7 +119,7 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_count_all_enroute_airline_operations(self):
         results = self.client.count_all_enroute_airline_operations()
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_decode_route(self):
