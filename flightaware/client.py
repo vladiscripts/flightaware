@@ -82,7 +82,7 @@ class Client(object):
 
         type	string	aircraft type ID
         """
-        data = {"type": aircraft_type}
+        data = { "type" : aircraft_type }
         return self._request("AircraftType", data)
 
     def airline_flight_info(self, fa_flight_id):
@@ -94,7 +94,7 @@ class Client(object):
         faFlightID	string	unique identifier assigned by FlightAware for this flight (or use "ident@departureTime")
 
         """
-        data = {"faFlightID": fa_flight_id}
+        data = { "faFlightID" : fa_flight_id }
         return self._request("AirlineFlightInfo", data)
 
     def airline_flight_schedules(self, start_date, end_date, origin=None, destination=None, airline=None, flight_number=None, howMany=MAX_RECORD_LENGTH, offset=0):
