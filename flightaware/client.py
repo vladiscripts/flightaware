@@ -211,7 +211,7 @@ class Client(object):
         Given an aircraft identification, returns 1 if the aircraft is blocked from public tracking, 0 if it is not.
         ident	string	requested tail number
         """
-        data = {"ident": ident}
+        data = { "ident" : ident }
         return self._request("BlockIdentCheck", data)
 
     def count_airport_operations(self, airport):
