@@ -109,11 +109,12 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_block_indent_check(self):
         results = self.client.block_indent_check("N415PW")
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertTrue(isinstance(results, (int, long)))
 
     def test_count_airport_operations(self):
-        results = self.client.count_airport_operations("BNA")
+        results = self.client.count_airport_operations("KSFO")
+        if 1: pprint(results)
         self.assertNotIn("error", results)
 
     def test_decode_route(self):
