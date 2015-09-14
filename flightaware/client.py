@@ -206,6 +206,23 @@ class Client(object):
         """
         return self._request("AllAirports")
 
+    def arrived(self, airport, howMany=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
+        """
+        Arrived returns information about flights that have recently arrived for the specified airport and maximum number of
+        flights to be returned. Flights are returned from most to least recent. Only flights that arrived within the last 24 hours are considered.
+
+        Times returned are seconds since 1970 (UNIX epoch seconds).
+
+        See also Departed, Enroute, and Scheduled for other airport tracking functionality.
+
+        airport	string	the ICAO airport ID (e.g., KLAX, KSFO, KIAH, KHOU, KJFK, KEWR, KORD, KATL, etc.)
+        howMany	int	determines the number of results. Must be a positive integer value less than or equal to 15, unless SetMaximumResultSize has been called.
+        filter	string	can be "ga" to show only general aviation traffic, "airline" to only show airline traffic, or null/empty to show all traffic.
+        offset	int	must be an integer value of the offset row count you want the search to start at. Most requests should be 0.
+        """
+        data = { "airport" : airport, "howMany" : howMany, "filter" : filter, "offset" : offset}
+        return self._request("Arrived", data)
+
     def block_indent_check(self, ident):
         """
         Given an aircraft identification, returns 1 if the aircraft is blocked from public tracking, 0 if it is not.
@@ -247,23 +264,6 @@ class Client(object):
             "destination": destination,
         }
         return self._request("DecodeRoute", data)
-
-    def arrived(self, airport, howMany=MAX_RECORD_LENGTH, filter=TrafficFilter.ALL, offset=0):
-        """
-        Arrived returns information about flights that have recently arrived for the specified airport and maximum number of
-        flights to be returned. Flights are returned from most to least recent. Only flights that arrived within the last 24 hours are considered.
-
-        Times returned are seconds since 1970 (UNIX epoch seconds).
-
-        See also Departed, Enroute, and Scheduled for other airport tracking functionality.
-
-        airport	string	the ICAO airport ID (e.g., KLAX, KSFO, KIAH, KHOU, KJFK, KEWR, KORD, KATL, etc.)
-        howMany	int	determines the number of results. Must be a positive integer value less than or equal to 15, unless SetMaximumResultSize has been called.
-        filter	string	can be "ga" to show only general aviation traffic, "airline" to only show airline traffic, or null/empty to show all traffic.
-        offset	int	must be an integer value of the offset row count you want the search to start at. Most requests should be 0.
-        """
-        data = {"airport": airport, "howMany": howMany, "filter": filter, "offset": offset}
-        return self._request("Arrived", data)
 
     def delete_alert(self, alert_id=None):
         """
