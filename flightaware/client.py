@@ -1,4 +1,5 @@
 import os
+import sys
 import datetime
 import logging
 import pytz
@@ -11,6 +12,7 @@ logger = logging.getLogger("flightaware.client")
 BASE_URL = "http://flightxml.flightaware.com/json/FlightXML2/"
 MAX_RECORD_LENGTH = 15
 EPOCH = datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)
+MAX_REQUEST_RETRIES = 3
 
 def to_unix_timestamp(val):
     if val:
@@ -59,21 +61,40 @@ class Client(object):
         url = os.path.join(BASE_URL, method)
         logger.debug("POST\n%s\n%s\n", url, data)
 
-        r = requests.post(url=url, data=data, auth=self.auth, headers=self.headers)
+        last_text = ""
+        for retry in range(0, MAX_REQUEST_RETRIES):
+            r = requests.post(url=url, data=data, auth=self.auth, headers=self.headers)
+            last_text = r.text
 
-        # Handle the exception where the response isn't JSON formatted
-        try:
-            result = r.json()
-            final = result
-            key = "{}Result".format(method)
-            if key in result:
-                final = result[key]
-                # Test if final is a dict before iterating
-                if type(final) is dict and "data" in final:
-                    final = final["data"]
-            return final
-        except:
-            return { 'error' : 'internal server error', 'text' : r.text }
+            # Handle the exception where the response isn't JSON formatted
+            try:
+                result = r.json()
+                final = result
+                key = "{}Result".format(method)
+                if key in result:
+                    final = result[key]
+                    # Test if final is a dict before iterating
+                    if type(final) is dict and "data" in final:
+                        final = final["data"]
+                return final
+            except:
+                # List of failures we should try ...
+                retriableFailures = [
+                    u'Operation failed: list element in braces followed by "}" instead of space\n',
+                    u'Service Interruption',
+                ]
+
+                doRetry = False
+                for failure in retriableFailures:
+                    if r.text.find(failure) != -1:
+                        sys.stderr.write("[request failed:  retrying]")
+                        doRetry = True
+                        break
+
+                if not doRetry:
+                    break
+
+        return { 'error' : 'internal server error', 'text' : last_text }
 
     def aircraft_type(self, aircraft_type):
         """
