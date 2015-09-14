@@ -107,6 +107,11 @@ class TestSequenceFunctions(unittest.TestCase):
         if verbose: pprint(results)
         self.assertNotIn("error", results)
 
+    def test_arrived(self):
+        results = self.client.arrived("KSFO")
+        if 1: pprint(results)
+        self.assertNotIn("error", results)
+
     def test_block_indent_check(self):
         results = self.client.block_indent_check("N415PW")
         if verbose: pprint(results)
@@ -127,7 +132,7 @@ class TestSequenceFunctions(unittest.TestCase):
         if verbose: pprint(faFlightID)
 
         results = self.client.decode_flight_route(faFlightID)
-        if 1: pprint(results)
+        if verbose: pprint(results)
         self.assertNotIn("error", results)
 
     def test_decode_route(self):
