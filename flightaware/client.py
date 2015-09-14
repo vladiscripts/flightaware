@@ -219,7 +219,7 @@ class Client(object):
         Given an airport, CountAirportOperations returns integer values on the number of aircraft scheduled or actually
         en route or departing from the airport. Scheduled arrival is a non-airborne flight that is scheduled to the airport in question.
         """
-        data = {"airport": airport}
+        data = { "airport" : airport }
         return self._request("CountAirportOperations", data)
 
     def count_all_enroute_airline_operations(self):
