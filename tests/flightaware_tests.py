@@ -36,7 +36,7 @@ class TestSequenceFunctions(unittest.TestCase):
         results = self.client.count_airport_operations("BNA")
         self.assertNotIn("error", results)
 
-    def weather_calls(self):
+    def test_weather_calls(self):
         results = self.client.ntaf("BNA")
         self.assertNotIn("error", results)
         results = self.client.taf("BNA")
@@ -48,10 +48,36 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_aircraft_type(self):
         results = self.client.aircraft_type("GALX")
+        if verbose: print results
         self.assertNotIn("error", results)
+
+    def test_airline_flight_info(self):
+        faFlightID = self.client.get_flight_id("N415PW", 1442008560)
+        if verbose: pprint(faFlightID)
+
+        results = self.client.airline_flight_info(faFlightID)
+        if verbose: print results
+        self.assertNotIn("error", results)
+
+    def test_airline_flight_schedules(self):
+        start = datetime.now(tz=pytz.utc) + timedelta(days=2)
+        end = datetime.now(tz=pytz.utc) + timedelta(days=3)
+        results = self.client.airline_flight_schedules(
+            start_date=start,
+            end_date=end,
+            origin="BNA",
+            destination="ATL",
+        )
+        if 1: print results
+        self.assertNotIn("error", results)
+
+        for result in results:
+            self.assertIn("arrival_time", result)
+            self.assertIn("departure_time", result)
 
     def test_airline_insight(self):
         results = self.client.airline_insight("BNA", "ATL")
+        if verbose: print results
         self.assertNotIn("error", results)
 
     def test_airline_info(self):
@@ -119,22 +145,6 @@ class TestSequenceFunctions(unittest.TestCase):
         results = self.client.get_flight_id("N415PW", datetime.fromtimestamp(1442008560, tz=pytz.utc))
         if verbose: pprint(results)
         self.assertNotIn("error", results)
-
-    def test_get_flight_info(self):
-        start = datetime.now(tz=pytz.utc) + timedelta(days=2)
-        end = datetime.now(tz=pytz.utc) + timedelta(days=3)
-        results = self.client.airline_flight_schedules(
-            start_date=start,
-            end_date=end,
-            origin="BNA",
-            destination="ATL",
-        )
-        if verbose: print results
-        self.assertNotIn("error", results)
-
-        for result in results:
-            self.assertIn("arrival_time", result)
-            self.assertIn("departure_time", result)
 
     def test_get_historical_track(self):
         faFlightID = self.client.get_flight_id("N415PW", 1442008560)
