@@ -68,20 +68,20 @@ class TestSequenceFunctions(unittest.TestCase):
             origin="BNA",
             destination="ATL",
         )
-        if 1: print results
+        if verbose: print results
         self.assertNotIn("error", results)
 
         for result in results:
             self.assertIn("arrival_time", result)
             self.assertIn("departure_time", result)
 
+    def test_airline_info(self):
+        results = self.client.airline_info("SWA")
+        self.assertNotIn("error", results)
+
     def test_airline_insight(self):
         results = self.client.airline_insight("BNA", "ATL")
         if verbose: print results
-        self.assertNotIn("error", results)
-
-    def test_airline_info(self):
-        results = self.client.airline_info("SWA")
         self.assertNotIn("error", results)
 
     def test_airport_info(self):
