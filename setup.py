@@ -18,6 +18,7 @@ config = {
     "version": "0.1",
     "install_requires": [
         "requests>=2.0.0",
+		"pytz"
     ],
     "keywords": "travel flightaware airline flight flight-tracking flight-data",
     "classifiers": [
