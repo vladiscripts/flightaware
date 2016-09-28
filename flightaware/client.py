@@ -29,7 +29,10 @@ def to_unix_timestamp(val):
 
 
 def from_unix_timestamp(val):
-    return datetime.datetime.fromtimestamp(val)
+    if val:
+        return datetime.datetime.fromtimestamp(val)
+    else:
+        return None
 
 
 class TrafficFilter(object):
@@ -49,6 +52,18 @@ class AirlineInsightReportType(object):
     PASSENGER_LOAD_FACTOR_ACTUALLY_FLOWN = 3    # Passenger load factor of flights that are actually flown
     CARRIERS_BY_CARGO_WEIGHT = 4                # Carriers by most cargo weight
 
+class Error(Exception):
+    pass
+
+class FAError(Error):
+    def __init__(self, expression, message):
+        self.expression = expression
+        self.message = message
+
+class NoDataAvailableError(Error):
+    def __init__(self):
+        self.expression = 'Error'
+        self.message = 'No Data Available'
 
 class Client(object):
     def __init__(self, username, api_key):
@@ -70,13 +85,33 @@ class Client(object):
             try:
                 result = r.json()
                 final = result
+                if 'error' in result:
+                    if result['error']=='no data available':
+                        raise NoDataAvailableError
+                    else:
+                        raise FAError('error', result['error'])
                 key = "{}Result".format(method)
                 if key in result:
                     final = result[key]
+                # TODO - identify the list, or the key
+                valid_data_keys = ['data', 'scheduled', 'flights']
+                for k in valid_data_keys:
+                    #~ if type(final) is dict and k in final:
+                    if k not in final:
+                        continue
                     # Test if final is a dict before iterating
-                    if type(final) is dict and "data" in final:
-                        final = final["data"]
-                return final
+                    final = final[k]
+                output = final 
+                #~ print(output)
+                # Check next_offset value and iterate on self calling the next block of rows
+                if 'next_offset' in result[key] and result[key]['next_offset']>0 and result[key]['next_offset']<data['howMany']:
+                    data['offset'] = result[key]['next_offset']
+                    output.extend(self._request(method, data))
+                return output
+            except NoDataAvailableError as e:
+                raise e
+            except FAError as e:
+                raise e
             except:
                 # List of failures we should try ...
                 retriableFailures = [
@@ -94,7 +129,7 @@ class Client(object):
                 if not doRetry:
                     break
 
-        return { 'error' : 'internal server error', 'text' : last_text }
+        raise FAError('error', last_text)
 
     def aircraft_type(self, aircraft_type):
         """
@@ -374,7 +409,11 @@ class Client(object):
 
         """
         data = {"fleet": fleet, "howMany": howMany, "offset": offset}
-        return self._request("FleetScheduled", data)
+        results = self._request("FleetScheduled", data)
+        for item in results:
+            item["filed_departuretime"] = from_unix_timestamp(item["filed_departuretime"])
+            item["estimatedarrivaltime"] = from_unix_timestamp(item["estimatedarrivaltime"])
+        return results
 
 
     def flight_info(self, ident, howMany=MAX_RECORD_LENGTH):
@@ -394,7 +433,14 @@ class Client(object):
         howMany	int	maximum number of past flights to obtain. Must be a positive integer value less than or equal to 15, unless SetMaximumResultSize has been called.
         """
         data = { "ident": ident, "howMany": howMany }
-        return self._request("FlightInfo", data)
+        results = self._request("FlightInfo", data)
+        for item in results:
+            item["actualdeparturetime"] = from_unix_timestamp(item["actualdeparturetime"])
+            item["actualarrivaltime"] = from_unix_timestamp(item["actualarrivaltime"])
+            item["filed_departuretime"] = from_unix_timestamp(item["filed_departuretime"])
+            item["filed_time"] = from_unix_timestamp(item["filed_time"])
+            item["estimatedarrivaltime"] = from_unix_timestamp(item["estimatedarrivaltime"])
+        return results
 
     def flight_info_ex(self, ident, howMany=MAX_RECORD_LENGTH, offset=0):
         """
