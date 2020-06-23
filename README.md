@@ -12,7 +12,7 @@ In order to use the flightaware module, you'll need to have FlightAware username
 ## Installation
 This is only available via source at the moment.  Clone this repository, and install the flightaware software on your system using the following command.
 ```
-git clone https://github.com/icedawn/flightaware
+git clone https://github.com/vladiscripts/flightaware
 cd flightaware
 python setup.py install
 ```
