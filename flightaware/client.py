@@ -94,7 +94,7 @@ class Client(object):
                 if key in result:
                     final = result[key]
                 # TODO - identify the list, or the key
-                valid_data_keys = ['data', 'scheduled', 'flights']
+                valid_data_keys = ['data', 'scheduled', 'flights', 'departures', 'enroute']
                 for k in valid_data_keys:
                     #~ if type(final) is dict and k in final:
                     if k not in final:
